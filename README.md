@@ -13,7 +13,7 @@ yarn add @briodev/gatsby-theme-blog
 
 module.exports = {
   siteMetadata: {
-    title: `BrioDev Starter Theme`,
+    title: `BrioDev Blog Theme`,
     description: `A simple starter blog with image and SEO`,
     keywords: ['BrioDev', 'Gatsby Blog', 'Gatsby Theme' ],
     siteUrl: 'https://brio.dev',
