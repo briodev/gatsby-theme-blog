@@ -25,7 +25,7 @@ module.exports = {
   },
   plugins: [
     {
-      resolve: "briodev-gatsby-theme-blog",
+      resolve: "@briodev/gatsby-theme-blog",
       options: {
         contentPath: "src/content/blog-posts",
         basePath: "/blog",
