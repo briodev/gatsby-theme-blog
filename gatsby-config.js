@@ -10,6 +10,16 @@ module.exports = themeOptions => {
       description: `A simple starter blog with image and SEO`,
       keywords: ['BrioDev', 'Gatsby Blog', 'Gatsby Theme' ],
       siteUrl: 'https://brio.dev',
+      social: [
+        {
+          name: `Twitter`,
+          url: `https://twitter.com/briodev`,
+        },
+        {
+          name: `GitHub`,
+          url: `https://github.com/briodev`,
+        },
+      ],
       twitter: {
         site: '@briodev',
         creator: '@briodev' //This can be overwritten in SEO by the author twitter account
@@ -49,7 +59,7 @@ module.exports = themeOptions => {
           defaultLayouts: {
             default: require.resolve("./src/layouts/default-page-layout.js"),
             posts: require.resolve("./src/templates/post-page-template.js"),
-            tags: require.resolve("./src/templates/tag-page-template.js"),
+            //tags: require.resolve("./src/templates/tag-page-template.js"),
           },
         },
       },

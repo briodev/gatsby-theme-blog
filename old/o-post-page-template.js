@@ -9,30 +9,32 @@ import SEO from '../components/seo'
 
 
 export default ({data, pageContext}) => {
-  const post = data.blogPost
+  const post = data.mdx
   let image = null
-  if(post.headerImage) {
-    image = post.headerImage.childImageSharp.fluid
+  if(post.frontmatter.headerImage) {
+    image = post.frontmatter.headerImage.childImageSharp.fluid
   }
 
-  const previous = pageContext.previousId
-  const next = pageContext.nextId
+  const isArticle = post.frontmatter.article || false
+  const previous = pageContext.previous
+  const next = pageContext.next
 
   return (
     <>
     <SEO 
-      //canonical={post.canonical}
-      title = {post.title}
-      //description = {post.description}
-      keywords = {post.keywords}
+      canonical={post.frontmatter.canonical}
+      title = {post.frontmatter.title}
+      description = {post.frontmatter.description}
+      keywords = {post.frontmatter.keywords}
       image = {image}
-      //twitterCreator = {post.twitterCreator}
-      slug = {post.slug}
+      article = {isArticle}
+      twitterCreator = {post.frontmatter.twitterCreator}
+      slug = {post.fields.slug}
       />
       <Layout>
         <HeaderImage>{ image ? (<Img fluid={image} />):null }</HeaderImage>
         <PostWrapper>
-          <Heading>{post.title}</Heading>
+          <Heading>{post.frontmatter.title}</Heading>
 
           <Body>
             <MDXRenderer>{post.body}</MDXRenderer>
@@ -46,46 +48,28 @@ export default ({data, pageContext}) => {
 }
 
 export const pageQuery = graphql`
-  query PostPageQuery($id: String!, $previousId: String, $nextId: String) {
-    site {
-      siteMetadata {
-        title
-        social {
-          name
-          url
-        }
-      }
-    }
-    blogPost(id: { eq: $id }) {
+  query BlogPostQuery($id: String) {
+    mdx(id: { eq: $id }) {
       id
-      excerpt
-      body
-      slug
-      title
-      headerImage {
+      fields {
+        slug
+      }
+      frontmatter {
+        canonical
+        title
+        description
+        keywords
+        article
+        twitterCreator
+        headerImage {
           childImageSharp {
             fluid(maxWidth: 1920, quality: 90) {
               ...GatsbyImageSharpFluid
             }
           }
         }
-      tags
-      keywords
-      date(formatString: "MMMM DD, YYYY")
-    }
-    previous: blogPost(id: { eq: $previousId }) {
-      id
-      excerpt
-      slug
-      title
-      date(formatString: "MMMM DD, YYYY")
-    }
-    next: blogPost(id: { eq: $nextId }) {
-      id
-      excerpt
-      slug
-      title
-      date(formatString: "MMMM DD, YYYY")
+      }
+      body
     }
   }
 `

@@ -5,40 +5,32 @@ import PostList from '../components/post-list';
 
 const PostsTemplate = (path) => {
   const data = useStaticQuery(graphql`
-    query {
-      allMdx(
-        sort: {order: DESC, fields: frontmatter___date}
-        filter: {frontmatter: {article: {eq: true}}}
-        ) {
+    query PostsQuery {
+      site {
+        siteMetadata {
+          title
+          social {
+            name
+            url
+          }
+        }
+      }
+      allBlogPost(sort: { fields: [date, title], order: DESC }, limit: 1000) {
         edges {
           node {
             id
-            frontmatter {
-              title
-              draft
-              date(formatString: "MMMM Do YYYY")
-            }
-            fields {
-              slug
-            }
             excerpt
-            timeToRead
-            parent {
-              ... on File {
-                name
-                base
-                relativePath
-                sourceInstanceName
-              }
-            }
+            slug
+            title
+            date(formatString: "MMMM DD, YYYY")
           }
         }
       }
     }
   `)
 
-  const posts = data.allMdx.edges
-  const basePath = path;
+  const posts = data.allBlogPost.edges
+  const basePath = path || '/blog';
   return (
     <Layout>
       <PostList posts={posts} basePath={basePath}/>

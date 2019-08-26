@@ -12,7 +12,6 @@ function SEO({
   keywords,
   image,
   lang, 
-  article,
   twitterCreator,
 }) {
 
@@ -72,7 +71,7 @@ function SEO({
                 },
                 {
                   property: `og:type`,
-                  content: article ? 'article' : 'website',
+                  content: 'article',
                 },
                 // Twitter section
                 {
