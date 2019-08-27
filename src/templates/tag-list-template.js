@@ -7,6 +7,7 @@ const TagsTemplate = ( path ) => {
   const data = useStaticQuery(graphql`
     query PostTagsQuery {
       allBlogPost(sort: { fields: [date, title], order: DESC }, limit: 1000) {
+        distinct(field: tags)
         edges {
           node {
             tags
@@ -18,19 +19,7 @@ const TagsTemplate = ( path ) => {
 
   const posts = data.allBlogPost.edges
   const tagsPath = path
-
-  function getUniqueTags() {
-    let tags = []
-    posts.forEach(({node}) => {
-      node.tags.forEach(tag => {
-        tags.push(tag)
-      })
-    });
-    const uniqueTags = [...new Set(tags)]
-    return uniqueTags
-  }
-
-  const tagsList = getUniqueTags()
+  const tagsList = data.allBlogPost.distinct
 
   return (
     <Layout>

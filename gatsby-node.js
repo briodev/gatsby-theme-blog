@@ -48,6 +48,7 @@ exports.createSchemaCustomization = ({ actions, schema }) => {
   createTypes(`interface BlogPost @nodeInterface {
       id: ID!
       title: String!
+      description: String!
       body: String!
       slug: String!
       date: Date! @dateformat
@@ -55,6 +56,8 @@ exports.createSchemaCustomization = ({ actions, schema }) => {
       tags: [String]!
       keywords: [String]!
       excerpt: String!
+      canonical: String!
+      twitterCreator: String!
   }`)
 
   createTypes(
@@ -62,18 +65,17 @@ exports.createSchemaCustomization = ({ actions, schema }) => {
       name: `MdxBlogPost`,
       fields: {
         id: { type: `ID!` },
-        title: {
-          type: `String!`,
-        },
-        slug: {
-          type: `String!`,
-        },
+        title: { type: `String!` },
+        canonical: { type: `String!`},
+        description: { type: `String!` },
+        slug: { type: `String!` },
         headerImage: {
           type: `File`
         },
         date: { type: `Date!`, extensions: { dateformat: {} } },
         tags: { type: `[String]!` },
         keywords: { type: `[String]!` },
+        twitterCreator: {type: `String!`},
         excerpt: {
           type: `String!`,
           args: {
@@ -135,10 +137,13 @@ exports.onCreateNode = async ({ node, actions, getNode, createNodeId}, themeOpti
     }
     const fieldData = {
       title: node.frontmatter.title,
+      canonical: node.frontmatter.canonical || '',
+      description: node.frontmatter.description || '',
       tags: node.frontmatter.tags || [],
       slug,
       date: node.frontmatter.date,
       keywords: node.frontmatter.keywords || [],
+      twitterCreator: node.frontmatter.twitterCreator || ``,
       headerImage: node.frontmatter.headerImage
     }
 
@@ -179,11 +184,11 @@ exports.createPages = async ({ graphql, actions, reporter }, themeOptions) => {
   const result = await graphql(`
     {
       allBlogPost(sort: { fields: [date, title], order: DESC }, limit: 1000) {
+        distinct(field: tags)
         edges {
           node {
             id
             slug
-            tags
           }
         }
       }
@@ -197,6 +202,7 @@ exports.createPages = async ({ graphql, actions, reporter }, themeOptions) => {
   // Create Posts and Post pages.
   const { allBlogPost } = result.data
   const posts = allBlogPost.edges
+  const uniqueTags = allBlogPost.distinct
 
   // Create a page for each Post
   posts.forEach(({ node: post }, index) => {
@@ -230,18 +236,6 @@ exports.createPages = async ({ graphql, actions, reporter }, themeOptions) => {
     },
   })
 
-  // Create page for each Tag
-   getUniqueTags = () => {
-    let tags = []
-    posts.forEach(({node}) => {
-      node.tags.forEach(tag => {
-        tags.push(tag)
-      })
-    })
-    const uniqueTags = [...new Set(tags)]
-    return uniqueTags
-  }
-  const uniqueTags = getUniqueTags()
   uniqueTags.forEach((tag) => {
     createPage({
       path: `${tagsPath}/${tag}`,

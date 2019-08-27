@@ -17,7 +17,7 @@ function SEO({
 
   return (
     <StaticQuery
-      query={detailsQuery}
+      query={siteDefaultSEOQuery}
       render={ data => {
  
         const metaDescription = description || data.site.siteMetadata.description
@@ -80,7 +80,7 @@ function SEO({
                 },
                 {
                   name: `twitter:site`,
-                  content: data.site.siteMetadata.twitter.site,
+                  content: twitterCreator,
                 },
                 {
                   name: `twitter:creator`,
@@ -122,7 +122,7 @@ SEO.propTypes = {
 
 export default SEO
 
-const detailsQuery = graphql`
+const siteDefaultSEOQuery = graphql`
   query DefaultSEOQuery {
     site {
       siteMetadata {

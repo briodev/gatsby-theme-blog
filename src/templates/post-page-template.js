@@ -8,12 +8,15 @@ import PreviousNext from '../components/previousNext'
 import SEO from '../components/seo'
 
 
-export default ({data, pageContext}) => {
+export default ({data}) => {
   const post = data.blogPost
-  let image = null
-  if(post.headerImage) {
-    image = post.headerImage.childImageSharp.fluid
-  }
+  const site = data.site.siteMetadata
+  
+  const image = post.headerImage ? post.headerImage.childImageSharp.fluid : null
+  const description = post.description || site.description
+  const keywords = post.keywords || site.keywords
+  const canonical = post.canonical ? `${post.canonical}` : `${site.siteUrl}${post.slug}` || site.siteMetadata.siteUrl
+  const twitterCreator = post.twitterCreator || site.twitter.creator
 
   const previous = data.previous
   const next = data.next
@@ -21,12 +24,12 @@ export default ({data, pageContext}) => {
   return (
     <>
     <SEO 
-      //canonical={post.canonical}
+      canonical={canonical}
       title = {post.title}
-      //description = {post.description}
-      keywords = {post.keywords}
+      description = {description}
+      keywords = {keywords}
       image = {image}
-      //twitterCreator = {post.twitterCreator}
+      twitterCreator = {twitterCreator}
       slug = {post.slug}
       />
       <Layout>
@@ -49,10 +52,12 @@ export const pageQuery = graphql`
   query PostPageQuery($id: String!, $previousId: String, $nextId: String) {
     site {
       siteMetadata {
+        siteUrl
         title
-        social {
-          name
-          url
+        description
+        keywords
+        twitter {
+          creator
         }
       }
     }
@@ -62,6 +67,7 @@ export const pageQuery = graphql`
       body
       slug
       title
+      description
       headerImage {
           childImageSharp {
             fluid(maxWidth: 1920, quality: 90) {
@@ -71,6 +77,7 @@ export const pageQuery = graphql`
         }
       tags
       keywords
+      canonical
       date(formatString: "MMMM DD, YYYY")
     }
     previous: blogPost(id: { eq: $previousId }) {
