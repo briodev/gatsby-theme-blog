@@ -167,11 +167,14 @@ exports.onCreateNode = async ({ node, actions, getNode, createNodeId}, themeOpti
 // These templates are simply data-fetching wrappers that import components
 const PostTemplate = require.resolve(`./src/templates/post-page-template.js`)
 const PostsTemplate = require.resolve(`./src/templates/post-list-template.js`)
+const TagTemplate = require.resolve(`./src/templates/tag-page-template.js`)
+const TagsTemplate = require.resolve(`./src/templates/tag-list-template.js`)
+
 
 
 exports.createPages = async ({ graphql, actions, reporter }, themeOptions) => {
   const { createPage } = actions
-  const { basePath } = withDefaults(themeOptions)
+  const { basePath, tagsPath } = withDefaults(themeOptions)
 
   const result = await graphql(`
     {
@@ -180,6 +183,7 @@ exports.createPages = async ({ graphql, actions, reporter }, themeOptions) => {
           node {
             id
             slug
+            tags
           }
         }
       }
@@ -210,10 +214,44 @@ exports.createPages = async ({ graphql, actions, reporter }, themeOptions) => {
     })
   })
 
-  // // Create the Posts page
+  // Create the Posts list page
   createPage({
     path: basePath,
     component: PostsTemplate,
     context: {},
   })
+
+  // Create the Tags list page
+  createPage({
+    path: tagsPath,
+    component: TagsTemplate,
+    context: {
+
+    },
+  })
+
+  // Create page for each Tag
+   getUniqueTags = () => {
+    let tags = []
+    posts.forEach(({node}) => {
+      node.tags.forEach(tag => {
+        tags.push(tag)
+      })
+    })
+    const uniqueTags = [...new Set(tags)]
+    return uniqueTags
+  }
+  const uniqueTags = getUniqueTags()
+  uniqueTags.forEach((tag) => {
+    createPage({
+      path: `${tagsPath}/${tag}`,
+      component: TagTemplate,
+      context: {
+        tag: tag,
+        basePath: basePath,
+        tagsPath: tagsPath
+      },
+    })
+  })
+
 }

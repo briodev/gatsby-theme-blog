@@ -15,8 +15,8 @@ export default ({data, pageContext}) => {
     image = post.headerImage.childImageSharp.fluid
   }
 
-  const previous = pageContext.previousId
-  const next = pageContext.nextId
+  const previous = data.previous
+  const next = data.next
 
   return (
     <>

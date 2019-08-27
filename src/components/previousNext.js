@@ -12,7 +12,7 @@ const PreviousNext = (props) => {
             <LinkItems>
                 <div>
                     { previous && 
-                        <Styled.a as={Link} to={previous.path}>
+                        <Styled.a as={Link} to={previous.slug}>
                             <Head>&#11013; &nbsp; Previous</Head>
                             <Title>{previous.title}</Title>
                         </Styled.a>
@@ -20,7 +20,7 @@ const PreviousNext = (props) => {
                 </div>
                 <div>
                     { next && 
-                        <Styled.a as={Link} to={next.path}>
+                        <Styled.a as={Link} to={next.slug}>
                             <Head>Next &nbsp; &#10145;</Head>
                             <Title>{next.title}</Title>
                         </Styled.a>
