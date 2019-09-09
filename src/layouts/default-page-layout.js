@@ -16,7 +16,7 @@ const components = {
 const Layout = ({ children }) => (
   <StaticQuery
     query={graphql`
-      query SiteTitleQuery {
+      query BrioDevBlogSiteTitleQuery {
         site {
           siteMetadata {
             title
