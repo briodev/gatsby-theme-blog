@@ -27,7 +27,7 @@ const Header = ({ siteTitle }) => {
         <HomeLink to="/">{siteTitle}</HomeLink>
         <NavLink to={basePath}>Blog</NavLink>
         <NavLink to={tagsPath}>Tags</NavLink>
-        <ExtLink href="https://github.com/briodev/gatsby-theme-base">GitHub</ExtLink>
+        <ExtLink href="https://github.com/briodev">GitHub</ExtLink>
       </p>
     </Content>
   </SiteHeader>
